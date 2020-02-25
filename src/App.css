@@ -48,6 +48,7 @@
 .ballOn__title,
 .quarter__title {
   text-transform: uppercase;
+  text-align: center;
   font-size: 3rem;
   padding: 2rem;
 }

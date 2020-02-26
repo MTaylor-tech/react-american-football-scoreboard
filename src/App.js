@@ -1,5 +1,5 @@
 //TODO: STEP 1 - Import the useState hook.
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from 'react';
 import "./App.css";
 import BottomRow from "./BottomRow";
 import ReactDOM from 'react-dom';
@@ -8,6 +8,28 @@ Number.prototype.pad = function(size) {
     var s = String(this);
     while (s.length < (size || 2)) {s = "0" + s;}
     return s;
+}
+
+function useInterval(callback, delay) {
+  const savedCallback = useRef();
+  let id;
+  // Remember the latest callback.
+  useEffect(() => {
+    savedCallback.current = callback;
+  }, [callback]);
+
+  // Set up the interval.
+  useEffect(() => {
+    function tick() {
+      savedCallback.current();
+    }
+    if (delay !== null) {
+      id = setInterval(tick, delay);
+      return () => clearInterval(id);
+    }
+  }, [delay]);
+
+  return id;
 }
 
 function App() {
@@ -20,21 +42,26 @@ function App() {
   let timerInterval;
 
   const tick = () => {
-    if ((timerMin <= 0) && (timerSec <= 0)) {
+    console.log(`Tick: ${timerMin}:${timerSec} ${timerInterval}`);
+    let m = timerMin;
+    let s = timerSec;
+    if ((m < 0) || ((m <= 0) && (s <= 0))) {
       stopTimer();
     } else {
-      if (timerSec === 0) {
+      if (s <= 0) {
         setTimerSec(59);
-        setTimerMin(timerMin - 1);
+        //setTimerMin(timerMin => timerMin - 1);
+        setTimerMin(m - 1);
       } else {
-        setTimerSec(timerSec - 1);
+        //setTimerSec(timerSec => timerSec - 1);
+        setTimerSec(s - 1);
       }
     }
   };
 
   const resetTimer = () => { stopTimer(); setTimerMin(15); setTimerSec(0)};
-  const startTimer = () => { App.timerInterval = setInterval(()=>tick(),1000)};
-  const stopTimer = () => { clearInterval(App.timerInterval)};
+  //const startTimer = () => { App.timerInterval = useInterval(tick,1000)};
+  const stopTimer = () => { clearInterval(timerInterval)};
 
   const addScore = (score, homeTeam) => {
     if (score >= 6) {
@@ -97,7 +124,7 @@ function App() {
           <button className="awayButtons__fieldGoal" onClick={()=>addScore(3, false)}>Away Field Goal</button>
         </div>
         <div className="homeButtons">
-          <button className="homeButtons__touchdown" onClick={()=>startTimer()}>Start Timer</button>
+          <button className="homeButtons__touchdown" onClick={timerInterval = useInterval(tick,1000)}>Start Timer</button>
           <button className="homeButtons__touchdown" onClick={()=>stopTimer()}>Stop Timer</button>
           <button className="homeButtons__touchdown" onClick={()=>resetTimer()}>Reset Timer</button>
         </div>
@@ -105,5 +132,7 @@ function App() {
     </div>
   );
 }
+
+
 
 export default App;

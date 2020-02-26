@@ -12,7 +12,6 @@ Number.prototype.pad = function(size) {
 
 function useInterval(callback, delay) {
   const savedCallback = useRef();
-  let id;
   // Remember the latest callback.
   useEffect(() => {
     savedCallback.current = callback;
@@ -24,12 +23,10 @@ function useInterval(callback, delay) {
       savedCallback.current();
     }
     if (delay !== null) {
-      id = setInterval(tick, delay);
+      let id = setInterval(tick, delay);
       return () => clearInterval(id);
     }
   }, [delay]);
-
-  return id;
 }
 
 function App() {
@@ -38,8 +35,9 @@ function App() {
   const [scoreAway, setScoreAway] = useState(0);
   const [timerMin, setTimerMin] = useState(15);
   const [timerSec, setTimerSec] = useState(0);
+  const [timerIsRunning, setTimerIsRunning] = useState(false);
   const [readyForExtraPoint, setReadyForExtraPoint] = useState(false);
-  let timerInterval;
+
 
   const tick = () => {
     console.log(`Tick: ${timerMin}:${timerSec} ${timerInterval}`);
@@ -59,9 +57,13 @@ function App() {
     }
   };
 
+  let timerInterval = useInterval(tick,timerIsRunning ? 1000 : null);
+
+
+
   const resetTimer = () => { stopTimer(); setTimerMin(15); setTimerSec(0)};
-  //const startTimer = () => { App.timerInterval = useInterval(tick,1000)};
-  const stopTimer = () => { clearInterval(timerInterval)};
+  const startTimer = () => { setTimerIsRunning(true) };
+  const stopTimer = () => { setTimerIsRunning(false) };
 
   const addScore = (score, homeTeam) => {
     if (score >= 6) {
@@ -124,7 +126,7 @@ function App() {
           <button className="awayButtons__fieldGoal" onClick={()=>addScore(3, false)}>Away Field Goal</button>
         </div>
         <div className="homeButtons">
-          <button className="homeButtons__touchdown" onClick={timerInterval = useInterval(tick,1000)}>Start Timer</button>
+          <button className="homeButtons__touchdown" onClick={()=>startTimer()}>Start Timer</button>
           <button className="homeButtons__touchdown" onClick={()=>stopTimer()}>Stop Timer</button>
           <button className="homeButtons__touchdown" onClick={()=>resetTimer()}>Reset Timer</button>
         </div>

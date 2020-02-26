@@ -4,12 +4,37 @@ import "./App.css";
 import BottomRow from "./BottomRow";
 import ReactDOM from 'react-dom';
 
+Number.prototype.pad = function(size) {
+    var s = String(this);
+    while (s.length < (size || 2)) {s = "0" + s;}
+    return s;
+}
+
 function App() {
   //TODO: STEP 2 - Establish your application's state with some useState hooks.  You'll need one for the home score and another for the away score.
   const [scoreHome, setScoreHome] = useState(0);
   const [scoreAway, setScoreAway] = useState(0);
-  const [timer, setTimer] = useState('00:00');
+  const [timerMin, setTimerMin] = useState(15);
+  const [timerSec, setTimerSec] = useState(0);
   const [readyForExtraPoint, setReadyForExtraPoint] = useState(false);
+  let timerInterval;
+
+  const tick = () => {
+    if ((timerMin <= 0) && (timerSec <= 0)) {
+      stopTimer();
+    } else {
+      if (timerSec === 0) {
+        setTimerSec(59);
+        setTimerMin(timerMin - 1);
+      } else {
+        setTimerSec(timerSec - 1);
+      }
+    }
+  };
+
+  const resetTimer = () => { stopTimer(); setTimerMin(15); setTimerSec(0)};
+  const startTimer = () => { App.timerInterval = setInterval(()=>tick(),1000)};
+  const stopTimer = () => { clearInterval(App.timerInterval)};
 
   const addScore = (score, homeTeam) => {
     if (score >= 6) {
@@ -49,7 +74,7 @@ function App() {
 
             <div className="home__score">{ scoreHome }</div>
           </div>
-          <div className="timer">{ timer }</div>
+          <div className="timer">{ timerMin.pad() }:{ timerSec.pad() }</div>
           <div className="away">
             <h2 className="away__name">Tigers</h2>
             <div className="away__score">{ scoreAway }</div>
@@ -70,6 +95,11 @@ function App() {
           { extraPointButton3 }
           { extraPointButton4 }
           <button className="awayButtons__fieldGoal" onClick={()=>addScore(3, false)}>Away Field Goal</button>
+        </div>
+        <div className="homeButtons">
+          <button className="homeButtons__touchdown" onClick={()=>startTimer()}>Start Timer</button>
+          <button className="homeButtons__touchdown" onClick={()=>stopTimer()}>Stop Timer</button>
+          <button className="homeButtons__touchdown" onClick={()=>resetTimer()}>Reset Timer</button>
         </div>
       </section>
     </div>

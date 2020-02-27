@@ -134,12 +134,12 @@ function App() {
       </section>
       <section className="buttons">
         <form onSubmit={()=>submitDetails()}>
-          <label>Ball position: </label><input id="ballPositionInput" defaultValue={ballPosition}></input>
-          <label>Yards for 1st Down: </label><input id="yardsForFirstDownInput" defaultValue={yardsForFirstDown}></input>
+          <label>Ball position: </label><input id="ballPositionInput" defaultValue={ballPosition} style={{width: 20}}></input><br />
+          <label>Yards for 1st Down: </label><input id="yardsForFirstDownInput" defaultValue={yardsForFirstDown}  style={{width: 20}}></input><br />
+          <button className="awayButtons__fieldGoal" onClick={()=>submitDetails()}>Submit</button><br />
           <label>Team with Possession: </label><br />
             <input type="radio" id="home" checked={(teamWithPossession===homeTeam)} onChange={()=>changePossession()}></input><label htmlFor="home"> { homeTeam } </label><br />
-            <input type="radio" id="away" checked={(teamWithPossession===awayTeam)} onChange={()=>changePossession()}></input><label htmlFor="away"> { awayTeam } </label>
-            <input type="button" value="Submit" onClick={()=>submitDetails()}></input>
+            <input type="radio" id="away" checked={(teamWithPossession===awayTeam)} onChange={()=>changePossession()}></input><label htmlFor="away"> { awayTeam } </label><br />
         </form>
         <div className="homeButtons">
           {/* TODO STEP 4 - Now we need to attach our state setter functions to click listeners. */}

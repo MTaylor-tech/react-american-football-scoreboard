@@ -39,25 +39,21 @@ function App() {
   const [timerSec, setTimerSec] = useState(0);
   const [timerIsRunning, setTimerIsRunning] = useState(false);
   const [readyForExtraPoint, setReadyForExtraPoint] = useState(false);
-  //const [ballPosition, setBallPosition] = useState();
-  //const [yardsForFirstDown, setYardsForFirstDown] = useState(10);
-  //const [narrative, setNarrative] = useState();
+  const [ballPosition, setBallPosition] = useState(50);
+  const [yardsForFirstDown, setYardsForFirstDown] = useState(10);
   const [teamWithPossession, setTeamWithPossession] = useState(homeTeam);
+  const props = [yardsForFirstDown,ballPosition];
 
   const tick = () => {
-    console.log(`Tick: ${timerMin}:${timerSec}`);
-    let m = timerMin;
-    let s = timerSec;
-    if ((m < 0) || ((m <= 0) && (s <= 0))) {
+    //console.log(`Tick: ${timerMin}:${timerSec}`);
+    if ((timerMin < 0) || ((timerMin <= 0) && (timerSec <= 0))) {
       stopTimer();
     } else {
-      if (s <= 0) {
+      if (timerSec <= 0) {
         setTimerSec(59);
-        //setTimerMin(timerMin => timerMin - 1);
-        setTimerMin(m - 1);
+        setTimerMin(timerMin - 1);
       } else {
-        //setTimerSec(timerSec => timerSec - 1);
-        setTimerSec(s - 1);
+        setTimerSec(timerSec - 1);
       }
     }
   };
@@ -98,7 +94,8 @@ function App() {
   };
 
   const submitDetails = (formSubmitEvent) => {
-      formSubmitEvent.preventDefault();
+      setYardsForFirstDown(document.getElementById("yardsForFirstDownInput").value);
+      setBallPosition(document.getElementById("ballPositionInput").value);
   };
 
   let extraPointButton1 = '';
@@ -124,23 +121,25 @@ function App() {
             {/* TODO STEP 3 - We need to change the hardcoded values in these divs to accept dynamic values from our state. */}
 
             <div className="home__score">{ scoreHome.pad() }</div>
+            <h2 className="home__name">{(teamWithPossession===homeTeam)?'🏈':''}</h2>
           </div>
           <div className="timer">{ timerMin.pad() }:{ timerSec.pad() }</div>
           <div className="away">
             <h2 className="away__name">{ awayTeam }</h2>
             <div className="away__score">{ scoreAway.pad() }</div>
+            <h2 className="away__name">{(teamWithPossession===awayTeam)?'🏈':''}</h2>
           </div>
         </div>
-        <BottomRow />
+        <BottomRow props={props} />
       </section>
       <section className="buttons">
-        <form onSubmit={(formSubmitEvent)=>submitDetails(formSubmitEvent)}>
-        {/*  <label>Ball position: </label><input defaultValue={ballPosition}></input>
-          <label>Yards for 1st Down: </label><input defaultValue={yardsForFirstDown}></input>*/}
+        <form onSubmit={()=>submitDetails()}>
+          <label>Ball position: </label><input id="ballPositionInput" defaultValue={ballPosition}></input>
+          <label>Yards for 1st Down: </label><input id="yardsForFirstDownInput" defaultValue={yardsForFirstDown}></input>
           <label>Team with Possession: </label><br />
             <input type="radio" id="home" checked={(teamWithPossession===homeTeam)} onChange={()=>changePossession()}></input><label htmlFor="home"> { homeTeam } </label><br />
             <input type="radio" id="away" checked={(teamWithPossession===awayTeam)} onChange={()=>changePossession()}></input><label htmlFor="away"> { awayTeam } </label>
-            {/*<input type="button" value="Submit"></input>*/}
+            <input type="button" value="Submit" onClick={()=>submitDetails()}></input>
         </form>
         <div className="homeButtons">
           {/* TODO STEP 4 - Now we need to attach our state setter functions to click listeners. */}

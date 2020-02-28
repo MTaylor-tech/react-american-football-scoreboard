@@ -1,10 +1,12 @@
 import React, {useState} from "react";
 import "./App.css";
 
-const BottomRow = ({props}) => {
+const BottomRow = (props) => {
   const [quarter, setQuarter] = useState(1);
   const [down, setDown] = useState(1);
-  const [yardsForFirstDown,ballPosition] = props;
+  const yardsForFirstDown = props['yardsForFirstDown'];
+  const ballPosition = props['ballPosition'];
+  //const [yardsForFirstDown,ballPosition] = props;
   //const [ballPosition, setBallPosition] = useState(0);
   //const [yardsForFirstDown, setYardsForFirstDown] = useState(10);
 

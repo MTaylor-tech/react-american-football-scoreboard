@@ -130,7 +130,7 @@ function App() {
             <h2 className="away__name">{(teamWithPossession===awayTeam)?'🏈':''}</h2>
           </div>
         </div>
-        <BottomRow props={props} />
+        <BottomRow yardsForFirstDown={yardsForFirstDown} ballPosition={ballPosition} />
       </section>
       <section className="buttons">
         <form onSubmit={()=>submitDetails()}>
